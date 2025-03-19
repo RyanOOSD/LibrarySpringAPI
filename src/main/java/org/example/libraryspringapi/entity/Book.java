@@ -89,6 +89,7 @@ public class Book {
                 ", title='" + title + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", publicationYear=" + publicationYear +
+                ", authors=" + authors +
                 '}';
     }
 }

@@ -49,4 +49,73 @@ public class LibraryMember {
     @OneToMany(mappedBy = "libraryMember", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonManagedReference
     private List<BorrowRecord> borrowedBooks;
+
+    public LibraryMember() {
+    }
+
+    public LibraryMember(String name, String email, Date membershipDate) {
+        this.name = name;
+        this.email = email;
+        this.membershipDate = membershipDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getMembershipDate() {
+        return membershipDate;
+    }
+
+    public void setMembershipDate(Date membershipDate) {
+        this.membershipDate = membershipDate;
+    }
+
+    public MembershipCard getMembershipCard() {
+        return membershipCard;
+    }
+
+    public void setMembershipCard(MembershipCard membershipCard) {
+        this.membershipCard = membershipCard;
+    }
+
+    public List<BorrowRecord> getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public void setBorrowedBooks(List<BorrowRecord> borrowedBooks) {
+        this.borrowedBooks = borrowedBooks;
+    }
+
+    @Override
+    public String toString() {
+        return "LibraryMember{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", membershipDate=" + membershipDate +
+                ", membershipCard=" + membershipCard +
+                ", borrowedBooks=" + borrowedBooks +
+                '}';
+    }
 }

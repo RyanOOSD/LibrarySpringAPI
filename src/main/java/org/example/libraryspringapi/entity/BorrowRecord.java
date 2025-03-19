@@ -35,4 +35,53 @@ public class BorrowRecord {
     @JoinColumn(name = "borrow_record_id", referencedColumnName = "id")
     @JsonBackReference
     private LibraryMember libraryMember;
+
+    public BorrowRecord() {
+    }
+
+    public BorrowRecord(Date borrowDate, Date returnDate) {
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(Date borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public LibraryMember getLibraryMember() {
+        return libraryMember;
+    }
+
+    public void setLibraryMember(LibraryMember libraryMember) {
+        this.libraryMember = libraryMember;
+    }
+
+    @Override
+    public String toString() {
+        return "BorrowRecord{" +
+                "id=" + id +
+                ", borrowDate=" + borrowDate +
+                ", returnDate=" + returnDate +
+                '}';
+    }
 }

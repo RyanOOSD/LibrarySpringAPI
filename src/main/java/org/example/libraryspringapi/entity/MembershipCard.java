@@ -40,4 +40,63 @@ public class MembershipCard {
     @OneToOne(mappedBy = "membershipCard")
     @JsonBackReference
     private LibraryMember libraryMember;
+
+    public MembershipCard() {
+    }
+
+    public MembershipCard(Date issueDate, String cardNumber, Date expiryDate) {
+        this.issueDate = issueDate;
+        this.cardNumber = cardNumber;
+        this.expiryDate = expiryDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public Date getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(Date issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public LibraryMember getLibraryMember() {
+        return libraryMember;
+    }
+
+    public void setLibraryMember(LibraryMember libraryMember) {
+        this.libraryMember = libraryMember;
+    }
+
+    @Override
+    public String toString() {
+        return "MembershipCard{" +
+                "id=" + id +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", issueDate=" + issueDate +
+                ", expiryDate=" + expiryDate +
+                '}';
+    }
 }
