@@ -1,6 +1,8 @@
 package org.example.libraryspringapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -24,10 +26,11 @@ public class Author {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String biography;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
     @JoinTable(name = "author_books",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @JsonIgnoreProperties({"authors"})
     private Set<Book> books;
 
     public Author() {
