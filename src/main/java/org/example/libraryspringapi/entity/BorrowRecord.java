@@ -36,6 +36,11 @@ public class BorrowRecord {
     @JsonBackReference
     private LibraryMember libraryMember;
 
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Book book;
+
     public BorrowRecord() {
     }
 
@@ -74,6 +79,14 @@ public class BorrowRecord {
 
     public void setLibraryMember(LibraryMember libraryMember) {
         this.libraryMember = libraryMember;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     @Override

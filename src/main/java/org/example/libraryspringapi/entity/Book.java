@@ -1,11 +1,13 @@
 package org.example.libraryspringapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,6 +34,10 @@ public class Book {
 
     @ManyToMany(mappedBy = "books", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     private Set<Author> authors;
+
+    @OneToMany(mappedBy = "book", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @JsonManagedReference
+    private List<BorrowRecord> borrowRecords;
 
     public Book() {
     }
@@ -80,6 +86,14 @@ public class Book {
 
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<BorrowRecord> getBorrowRecords() {
+        return borrowRecords;
+    }
+
+    public void setBorrowRecords(List<BorrowRecord> borrowRecords) {
+        this.borrowRecords = borrowRecords;
     }
 
     @Override
