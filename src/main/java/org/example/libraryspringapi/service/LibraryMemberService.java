@@ -36,8 +36,8 @@ public class LibraryMemberService {
     }
 
     // Update a library member
-    public LibraryMember updateLibraryMember(LibraryMember updatedLibraryMember) {
-        LibraryMember libraryMemberToUpdate = libraryMemberRepo.findById(updatedLibraryMember.getId()).orElse(null);
+    public LibraryMember updateLibraryMember(Long id, LibraryMember updatedLibraryMember) {
+        LibraryMember libraryMemberToUpdate = libraryMemberRepo.findById(id).orElse(null);
         if (libraryMemberToUpdate != null) {
             libraryMemberToUpdate.setName(updatedLibraryMember.getName());
             libraryMemberToUpdate.setEmail(updatedLibraryMember.getEmail());
