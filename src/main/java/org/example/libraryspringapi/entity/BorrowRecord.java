@@ -26,13 +26,13 @@ public class BorrowRecord {
     @Column(nullable = false)
     private Date borrowDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The borrow date must be in the format yyyy-MM-dd!")
     @Column(nullable = true)
     private Date returnDate;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "borrow_record_id", referencedColumnName = "id")
+    @JoinColumn(name = "library_member_id", referencedColumnName = "id")
     @JsonBackReference
     private LibraryMember libraryMember;
 
