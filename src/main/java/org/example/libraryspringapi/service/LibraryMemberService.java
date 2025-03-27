@@ -93,14 +93,14 @@ public class LibraryMemberService {
     }
 
     // Update just the membership card
-    public void updateMembershipCard(Long id, MembershipCard membershipCard) {
+    public MembershipCard updateMembershipCard(Long id, MembershipCard membershipCard) {
         MembershipCard membershipCardToUpdate = membershipCardRepo.findById(id).orElse(null);
         if (membershipCardToUpdate != null) {
             membershipCardToUpdate.setCardNumber((membershipCard.getCardNumber()));
             membershipCardToUpdate.setIssueDate((membershipCard.getIssueDate()));
             membershipCardToUpdate.setExpiryDate((membershipCard.getExpiryDate()));
         }
-        membershipCardRepo.save(membershipCardToUpdate);
+        return membershipCardRepo.save(membershipCardToUpdate);
     }
 
     // Delete a membership card without deleting the library member

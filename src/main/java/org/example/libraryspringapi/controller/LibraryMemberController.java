@@ -80,8 +80,8 @@ public class LibraryMemberController {
 
     @PutMapping("/update-card/{card_id}")
     public ResponseEntity<MembershipCard> updateMembershipCard(@PathVariable Long card_id, @RequestBody MembershipCard membershipCard) {
-        libraryMemberService.updateMembershipCard(card_id, membershipCard);
-        return new ResponseEntity<>(membershipCard, HttpStatus.OK);
+        MembershipCard updated = libraryMemberService.updateMembershipCard(card_id, membershipCard);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-card/{card_id}")
