@@ -23,13 +23,11 @@ public class MembershipCard {
 
     // Formats incoming/outgoing JSON
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The issue date must be in the format yyyy-MM-dd!")
     @NotNull(message = "The membership card issue date is required!")
     @Column(nullable = false)
     private Date issueDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The expiry date must be in the format yyyy-MM-dd!")
     @NotNull(message = "The membership card expiry date is required!")
     @Column(nullable = false)
     private Date expiryDate;
@@ -38,7 +36,7 @@ public class MembershipCard {
     // Since we don't want membershipCard to persist when a LibraryMember is deleted
     // we don't specify any cascade types here
     @OneToOne(mappedBy = "membershipCard")
-    @JsonBackReference
+    @JsonBackReference(value = "mem-card")
     private LibraryMember libraryMember;
 
     public MembershipCard() {

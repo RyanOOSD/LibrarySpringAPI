@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/borrow-record")
@@ -28,10 +29,20 @@ public class BorrowRecordController {
         return borrowRecordService.getBorrowRecordById(id);
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<BorrowRecord> createBorrowRecord(@RequestBody BorrowRecord borrowRecord) {
-        borrowRecordService.addBorrowRecord(borrowRecord);
-        return new ResponseEntity<>(borrowRecord, HttpStatus.CREATED);
+    @PostMapping("/{member_id}/check-out/{book_id}")
+    public ResponseEntity<BorrowRecord> createBorrowRecord(@PathVariable Long member_id, @PathVariable Long book_id, @RequestBody BorrowRecord borrowRecord) {
+        Optional<BorrowRecord> newBorrowRecord = borrowRecordService.addBorrowRecord(member_id, book_id, borrowRecord);
+        if (newBorrowRecord.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(newBorrowRecord.get());
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{member_id}/return/{book_id}")
+    public ResponseEntity<BorrowRecord> setBorrowRecordReturnDate(@PathVariable Long member_id, @PathVariable Long book_id) {
+        borrowRecordService.setBorrowRecordReturnDate(member_id, book_id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

@@ -47,8 +47,15 @@ public class AuthorService {
     }
 
     // Delete an author
-    public void deleteAuthor(long id) {
+    public String deleteAuthor(long id) {
+        Author authorToDelete = authorRepo.findById(id).orElse(null);
+        if (authorToDelete == null) {
+            return "Author does not exist!";
+        } else if (!authorToDelete.getBooks().isEmpty()) {
+            return "Author cannot be deleted because it is associated with a book!";
+        }
         authorRepo.deleteById(id);
+        return "";
     }
 
     // Add an author to a book
@@ -58,8 +65,10 @@ public class AuthorService {
         Book book = bookRepo.findById(bookId).orElse(null);
         if (author != null && book != null) {
             author.getBooks().add(book);
+            book.getAuthors().add(author);
         }
         authorRepo.save(author);
+        bookRepo.save(book);
     }
 
     // Remove author from a book
@@ -69,7 +78,9 @@ public class AuthorService {
         Book book = bookRepo.findById(bookId).orElse(null);
         if (author != null && book != null) {
             author.getBooks().remove(book);
+            book.getAuthors().remove(author);
         }
         authorRepo.save(author);
+        bookRepo.save(book);
     }
 }

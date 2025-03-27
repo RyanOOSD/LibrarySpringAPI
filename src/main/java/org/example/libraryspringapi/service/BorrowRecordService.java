@@ -8,7 +8,10 @@ import org.example.libraryspringapi.repository.BorrowRecordRepo;
 import org.example.libraryspringapi.repository.LibraryMemberRepo;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BorrowRecordService {
@@ -33,9 +36,35 @@ public class BorrowRecordService {
         return borrowRecordRepo.findById(id).orElse(null);
     }
 
-    // Create a borrow record
-    public void addBorrowRecord(BorrowRecord newBorrowRecord) {
-        borrowRecordRepo.save(newBorrowRecord);
+    // Create a borrow record - must be associated with a library member and book
+    // A book can only be checked out by one member at a time
+    public Optional<BorrowRecord> addBorrowRecord(Long authorId, Long bookId, BorrowRecord newBorrowRecord) {
+        LibraryMember libraryMember = libraryMemberRepo.findById(authorId).orElse(null);
+        Book book = bookRepo.findById(bookId).orElse(null);
+        // Check if the book has already been checked out
+        if (borrowRecordRepo.existsByBookAndReturnDateIsNull(book)) {
+            return Optional.empty();
+        }
+        if (libraryMember != null && book != null) {
+            newBorrowRecord.setLibraryMember(libraryMember);
+            newBorrowRecord.setBook(book);
+        }
+        BorrowRecord saved = borrowRecordRepo.save(newBorrowRecord);
+        return Optional.of(saved);
+    }
+
+    // Returning a book - sets returnDate to current date
+    public void setBorrowRecordReturnDate(Long memberId, Long bookId) {
+        LibraryMember libraryMember = libraryMemberRepo.findById(memberId).orElse(null);
+        Book book = bookRepo.findById(bookId).orElse(null);
+        if (libraryMember != null && book != null) {
+            BorrowRecord borrowRecord = borrowRecordRepo.findTopByBookAndLibraryMemberOrderByBorrowDateDesc(book, libraryMember);
+            if (borrowRecord.getReturnDate() == null) {
+                Date returnDate = new Date();
+                borrowRecord.setReturnDate(returnDate);
+            }
+            borrowRecordRepo.save(borrowRecord);
+        }
     }
 
     // Update a borrow record

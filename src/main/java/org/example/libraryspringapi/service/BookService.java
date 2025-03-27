@@ -1,5 +1,6 @@
 package org.example.libraryspringapi.service;
 
+import org.example.libraryspringapi.entity.Author;
 import org.example.libraryspringapi.entity.Book;
 import org.example.libraryspringapi.repository.AuthorRepo;
 import org.example.libraryspringapi.repository.BookRepo;
@@ -11,10 +12,12 @@ import java.util.List;
 public class BookService {
 
     private BookRepo bookRepo;
+    private AuthorRepo authorRepo;
 
     // Access repos with constructor DI
-    public BookService(BookRepo bookRepo) {
+    public BookService(BookRepo bookRepo, AuthorRepo authorRepo) {
         this.bookRepo = bookRepo;
+        this.authorRepo = authorRepo;
     }
 
     // Get all books
@@ -28,8 +31,14 @@ public class BookService {
     }
 
     // Create a book
-    public void addBook(Book newBook) {
-        bookRepo.save(newBook);
+    public void addBook(Long authorId, Book newBook) {
+        Author author = authorRepo.findById(authorId).orElse(null);
+        if (author != null) {
+            newBook.getAuthors().add(author);
+            author.getBooks().add(newBook);
+            bookRepo.save(newBook);
+            authorRepo.save(author);
+        }
     }
 
     // Update a book
@@ -45,7 +54,21 @@ public class BookService {
     }
 
     // Delete a book
-    public void deleteBook(Long id) {
-        bookRepo.deleteById(id);
+    public String deleteBook(Long id) {
+        Book book = bookRepo.findById(id).orElse(null);
+        if (book != null) {
+            if (!book.getBorrowRecords().isEmpty()) {
+                return "This book cannot be deleted, it is currently borrowed!";
+            }
+            for (Author author : book.getAuthors()) {
+                author.getBooks().remove(book);
+                authorRepo.save(author);
+            }
+            book.setAuthors(null);
+            bookRepo.deleteById(id);
+            return "";
+        } else {
+            return "The book you are trying to delete does not exist!";
+        }
     }
 }

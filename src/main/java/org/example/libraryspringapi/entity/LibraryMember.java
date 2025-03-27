@@ -34,7 +34,6 @@ public class LibraryMember {
 //    @DateTimeFormat(pattern = "yyyy-MM-dd")
     // Formats incoming/outgoing JSON
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The borrow date must be in the format yyyy-MM-dd!")
     @NotNull(message = "The member's registration date is required!")
     @Column(nullable = false)
     private Date membershipDate;
@@ -42,12 +41,12 @@ public class LibraryMember {
     // Since membershipCard is FK in this table, it is the "owner" of the relationship
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "membership_card_id", referencedColumnName = "id")
-    @JsonManagedReference
+    @JsonManagedReference(value = "mem-card")
     private MembershipCard membershipCard;
 
     // Referenced table
     @OneToMany(mappedBy = "libraryMember", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonManagedReference
+    @JsonManagedReference(value = "mem-borrow")
     private List<BorrowRecord> borrowedBooks;
 
     public LibraryMember() {

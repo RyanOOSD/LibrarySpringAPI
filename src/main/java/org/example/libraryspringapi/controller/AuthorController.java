@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/author")
@@ -41,9 +43,15 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-        authorService.deleteAuthor(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> deleteAuthor(@PathVariable Long id) {
+        String msg = authorService.deleteAuthor(id);
+        Map<String, String> response = new HashMap<>();
+        if (msg.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response.put("message", msg);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     @PostMapping("/{author_id}/add-to-book/{book_id}")

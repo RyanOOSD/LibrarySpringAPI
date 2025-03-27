@@ -20,20 +20,18 @@ public class BorrowRecord {
 
     // Formats incoming/outgoing JSON
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The borrow date must be in the format yyyy-MM-dd!")
     @PastOrPresent(message = "The borrow date cannot exceed today's date!")
     @NotNull(message = "The borrow date cannot be null!")
     @Column(nullable = false)
     private Date borrowDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The borrow date must be in the format yyyy-MM-dd!")
     @Column(nullable = true)
     private Date returnDate;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "library_member_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonBackReference("mem-borrow")
     private LibraryMember libraryMember;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
