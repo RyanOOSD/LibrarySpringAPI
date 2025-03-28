@@ -2,6 +2,7 @@ package org.example.libraryspringapi.service;
 
 import org.example.libraryspringapi.entity.Author;
 import org.example.libraryspringapi.entity.Book;
+import org.example.libraryspringapi.entity.BorrowRecord;
 import org.example.libraryspringapi.repository.AuthorRepo;
 import org.example.libraryspringapi.repository.BookRepo;
 import org.example.libraryspringapi.repository.BorrowRecordRepo;
@@ -73,8 +74,10 @@ public class BookService {
     public String deleteBook(Long id) {
         Book book = bookRepo.findById(id).orElse(null);
         if (book != null) {
-            if (!book.getBorrowRecords().isEmpty()) {
-                return "This book cannot be deleted, it is currently borrowed!";
+            for (BorrowRecord borrowRecord : book.getBorrowRecords()) {
+                if (borrowRecord.getReturnDate() == null) {
+                    return "This book cannot be deleted, it is currently borrowed!";
+                }
             }
             for (Author author : book.getAuthors()) {
                 author.getBooks().remove(book);
