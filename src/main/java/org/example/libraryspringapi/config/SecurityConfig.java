@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/author/new").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers(HttpMethod.PUT, "/api/author/**").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers(HttpMethod.DELETE, "/api/author/**").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/api/library-member").hasRole("LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/api/library-member/*").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.PUT, "/api/borrow-record/*").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.DELETE, "/api/borrow-record/*").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.POST, "/api/borrow-record/*/add-to-member/**").hasRole("LIBRARIAN")
@@ -60,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/borrow-record/history/**").hasAnyRole("LIBRARIAN", "MEMBER")
                         .requestMatchers("/register-member/**").permitAll()
                         .requestMatchers("/api/book/available").permitAll()
+                        .anyRequest().authenticated()
         );
 
         httpSecurity.httpBasic(Customizer.withDefaults());
