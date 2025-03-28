@@ -1,7 +1,6 @@
 package org.example.libraryspringapi.controller.auth;
 
 import org.example.libraryspringapi.entity.auth.LibraryUser;
-import org.example.libraryspringapi.repository.auth.LibraryUserRepo;
 import org.example.libraryspringapi.service.auth.LibraryUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,5 @@
 package org.example.libraryspringapi.entity.auth;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.example.libraryspringapi.entity.LibraryMember;

@@ -7,9 +7,6 @@ import org.example.libraryspringapi.repository.BookRepo;
 import org.example.libraryspringapi.repository.BorrowRecordRepo;
 import org.example.libraryspringapi.repository.LibraryMemberRepo;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.html.Option;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
