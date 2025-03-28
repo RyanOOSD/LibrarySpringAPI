@@ -17,6 +17,7 @@ public class LibraryUser {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String role;
 
     @OneToOne(cascade = CascadeType.ALL)

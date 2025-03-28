@@ -74,7 +74,9 @@ public class LibraryUserService implements UserDetailsService {
             existingLibraryUser.setUsername(libraryUser.getUsername());
             String password = new BCryptPasswordEncoder().encode(libraryUser.getPassword());
             existingLibraryUser.setPassword(password);
-            existingLibraryUser.setRole(libraryUser.getRole());
+            if (libraryUser.getRole() != null) {
+                existingLibraryUser.setRole(libraryUser.getRole());
+            }
         }
         return libraryUserRepo.save(existingLibraryUser);
     }
