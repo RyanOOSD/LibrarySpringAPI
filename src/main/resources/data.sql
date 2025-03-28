@@ -41,3 +41,8 @@ INSERT INTO borrow_record (borrow_date, return_date, book_id, library_member_id)
 INSERT INTO borrow_record (borrow_date, return_date, book_id, library_member_id) SELECT '2025-03-10', '2025-03-20', 1, 2 WHERE NOT EXISTS(SELECT 1 FROM borrow_record WHERE book_id = 1 AND library_member_id = 2);
 INSERT INTO borrow_record (borrow_date, return_date, book_id, library_member_id) SELECT '2025-03-15', null, 3, 5 WHERE NOT EXISTS(SELECT 1 FROM borrow_record WHERE book_id = 3 AND library_member_id = 5);
 INSERT INTO borrow_record (borrow_date, return_date, book_id, library_member_id) SELECT '2025-03-23', null, 4, 1 WHERE NOT EXISTS(SELECT 1 FROM borrow_record WHERE book_id = 4 AND library_member_id = 1);
+
+-- Add users (all are using 'password' as password, pre-hashed with 10 round bcrypt)
+INSERT INTO library_user (username, password, role, library_member_id) SELECT 'Admin', '$2a$10$upV4w/aWHHidFnyYZ87d0.Wk0CIciHnjbvqQ1tx7WkjvgPYQmuVTa', 'ADMIN', 1 WHERE NOT EXISTS(SELECT 1 FROM library_user WHERE library_member_id = 1);
+INSERT INTO library_user (username, password, role, library_member_id) SELECT 'Librarian', '$2a$10$fxpCdPi.t5auU/C3cyApxeR9AT6ly24f5LQhuYF.FfPOsCvoY0R72', 'LIBRARIAN', 2 WHERE NOT EXISTS(SELECT 1 FROM library_user WHERE library_member_id = 2);
+INSERT INTO library_user (username, password, role, library_member_id) SELECT 'Member', '$2a$10$RcYraRHOskuhuxygHBPOwu26XVvxjBBwW2rjOIz5mQlDplAxZtRGW', 'MEMBER', 3 WHERE NOT EXISTS(SELECT 1 FROM library_user WHERE library_member_id = 3);

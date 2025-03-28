@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface BorrowRecordRepo extends JpaRepository<BorrowRecord, Long> {
@@ -15,4 +16,6 @@ public interface BorrowRecordRepo extends JpaRepository<BorrowRecord, Long> {
 
     // Get the most recent BorrowRecord based on the library member and the book
     BorrowRecord findTopByBookAndLibraryMemberOrderByBorrowDateDesc(Book book, LibraryMember libraryMember);
+
+    List<BorrowRecord> findBorrowRecordByLibraryMember(LibraryMember libraryMember);
 }

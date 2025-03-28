@@ -7,6 +7,7 @@ import org.example.libraryspringapi.repository.BookRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -59,28 +60,32 @@ public class AuthorService {
     }
 
     // Add an author to a book
-    public void addAuthorToBook(Long authorId, Long bookId) {
+    public Optional<Author> addAuthorToBook(Long authorId, Long bookId) {
         // Get existing author and book
         Author author = authorRepo.findById(authorId).orElse(null);
         Book book = bookRepo.findById(bookId).orElse(null);
         if (author != null && book != null) {
             author.getBooks().add(book);
             book.getAuthors().add(author);
+            authorRepo.save(author);
+            bookRepo.save(book);
+            return Optional.of(author);
         }
-        authorRepo.save(author);
-        bookRepo.save(book);
+        return Optional.empty();
     }
 
     // Remove author from a book
-    public void removeAuthorFromBook(Long authorId, Long bookId) {
+    public Optional<Author> removeAuthorFromBook(Long authorId, Long bookId) {
         // Get existing author and book
         Author author = authorRepo.findById(authorId).orElse(null);
         Book book = bookRepo.findById(bookId).orElse(null);
         if (author != null && book != null) {
             author.getBooks().remove(book);
             book.getAuthors().remove(author);
+            authorRepo.save(author);
+            bookRepo.save(book);
+            return Optional.of(author);
         }
-        authorRepo.save(author);
-        bookRepo.save(book);
+        return Optional.empty();
     }
 }

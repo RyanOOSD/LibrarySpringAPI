@@ -31,12 +31,12 @@ public class BorrowRecord {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "library_member_id", referencedColumnName = "id")
-    @JsonBackReference("mem-borrow")
+    @JsonBackReference(value = "member-books")
     private LibraryMember libraryMember;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinColumn(name = "book_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonBackReference(value = "book-records")
     private Book book;
 
     public BorrowRecord() {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/author")
@@ -55,12 +56,22 @@ public class AuthorController {
     }
 
     @PostMapping("/{author_id}/add-to-book/{book_id}")
-    public void addAuthorToBook(@PathVariable Long author_id, @PathVariable Long book_id) {
-        authorService.addAuthorToBook(author_id, book_id);
+    public ResponseEntity<Author> addAuthorToBook(@PathVariable Long author_id, @PathVariable Long book_id) {
+        Optional<Author> updated = authorService.addAuthorToBook(author_id, book_id);
+        if (updated.isPresent()) {
+            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/{author_id}/remove-from-book/{book_id}")
-    public void removeAuthorFromBook(@PathVariable Long author_id, @PathVariable Long book_id) {
-        authorService.removeAuthorFromBook(author_id, book_id);
+    public ResponseEntity<Author> removeAuthorFromBook(@PathVariable Long author_id, @PathVariable Long book_id) {
+        Optional<Author> updated = authorService.removeAuthorFromBook(author_id, book_id);
+        if (updated.isPresent()) {
+            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

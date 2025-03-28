@@ -8,6 +8,7 @@ import org.example.libraryspringapi.repository.BorrowRecordRepo;
 import org.example.libraryspringapi.repository.LibraryMemberRepo;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,15 @@ public class BorrowRecordService {
     // Get all borrow records
     public List<BorrowRecord> getAllBorrowRecords() {
         return borrowRecordRepo.findAll();
+    }
+
+    public Optional<List<BorrowRecord>> getBorrowRecordsByLibraryMember(Long libraryMemberId) {
+        LibraryMember libraryMember = libraryMemberRepo.findById(libraryMemberId).orElse(null);
+        if (libraryMember != null) {
+            List<BorrowRecord> borrowRecords = borrowRecordRepo.findBorrowRecordByLibraryMember(libraryMember);
+            return Optional.of(borrowRecords);
+        }
+        return Optional.empty();
     }
 
     // Get borrow record by ID
@@ -83,41 +93,49 @@ public class BorrowRecordService {
     }
 
     // Add a borrow record to a library member
-    public void addBorrowRecordToLibraryMember(Long borrowRecordId, Long libraryMemberId) {
+    public Optional<BorrowRecord> addBorrowRecordToLibraryMember(Long borrowRecordId, Long libraryMemberId) {
         LibraryMember libraryMember = libraryMemberRepo.findById(libraryMemberId).orElse(null);
         BorrowRecord borrowRecord = borrowRecordRepo.findById(borrowRecordId).orElse(null);
         if (libraryMember != null && borrowRecord != null) {
             libraryMember.getBorrowedBooks().add(borrowRecord);
+            libraryMemberRepo.save(libraryMember);
+            return Optional.of(borrowRecord);
         }
-        libraryMemberRepo.save(libraryMember);
+        return Optional.empty();
     }
 
     // Remove a borrow record from a library member
-    public void removeBorrowRecordFromLibraryMember(Long borrowRecordId, Long libraryMemberId) {
+    public Optional<BorrowRecord> removeBorrowRecordFromLibraryMember(Long borrowRecordId, Long libraryMemberId) {
         LibraryMember libraryMember = libraryMemberRepo.findById(libraryMemberId).orElse(null);
         BorrowRecord borrowRecord = borrowRecordRepo.findById(borrowRecordId).orElse(null);
         if (libraryMember != null && borrowRecord != null) {
             libraryMember.getBorrowedBooks().remove(borrowRecord);
+            libraryMemberRepo.save(libraryMember);
+            return Optional.of(borrowRecord);
         }
-        libraryMemberRepo.save(libraryMember);
+        return Optional.empty();
     }
 
     // Add a book to a borrow record
-    public void addBookToBorrowRecord(Long bookId, Long borrowRecordId) {
+    public Optional<BorrowRecord> addBookToBorrowRecord(Long bookId, Long borrowRecordId) {
         Book book = bookRepo.findById(bookId).orElse(null);
         BorrowRecord borrowRecord = borrowRecordRepo.findById(borrowRecordId).orElse(null);
         if (book != null && borrowRecord != null) {
             borrowRecord.setBook(book);
+            borrowRecordRepo.save(borrowRecord);
+            return Optional.of(borrowRecord);
         }
-        borrowRecordRepo.save(borrowRecord);
+        return Optional.empty();
     }
 
     // Remove a book from a borrow record
-    public void removeBookFromBorrowRecord(Long bookId, Long borrowRecordId) {
+    public Optional<BorrowRecord> removeBookFromBorrowRecord(Long borrowRecordId) {
         BorrowRecord borrowRecord = borrowRecordRepo.findById(borrowRecordId).orElse(null);
         if (borrowRecord != null) {
             borrowRecord.setBook(null);
+            borrowRecordRepo.save(borrowRecord);
+            return Optional.of(borrowRecord);
         }
-        borrowRecordRepo.save(borrowRecord);
+        return Optional.empty();
     }
 }

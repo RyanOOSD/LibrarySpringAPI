@@ -1,9 +1,13 @@
 package org.example.libraryspringapi.controller;
 
 import org.example.libraryspringapi.entity.BorrowRecord;
+import org.example.libraryspringapi.entity.auth.CustomUserDetails;
 import org.example.libraryspringapi.service.BorrowRecordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +33,21 @@ public class BorrowRecordController {
         return borrowRecordService.getBorrowRecordById(id);
     }
 
+    @PreAuthorize("authentication.principal.libraryMemberId == #member_id or hasRole('ROLE_LIBRARIAN')")
+    @GetMapping("/history/{member_id}")
+    public ResponseEntity<List<BorrowRecord>> getBorrowRecordByMemberId(@PathVariable Long member_id) {
+        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        System.out.println("LibraryMemberId: " + ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getLibraryMemberId());
+
+        Optional<List<BorrowRecord>> borrowRecords = borrowRecordService.getBorrowRecordsByLibraryMember(member_id);
+        if (borrowRecords.isPresent()) {
+            return new ResponseEntity<>(borrowRecords.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("authentication.principal.libraryMemberId == #member_id or hasRole('ROLE_LIBRARIAN')")
     @PostMapping("/{member_id}/check-out/{book_id}")
     public ResponseEntity<BorrowRecord> createBorrowRecord(@PathVariable Long member_id, @PathVariable Long book_id, @RequestBody BorrowRecord borrowRecord) {
         Optional<BorrowRecord> newBorrowRecord = borrowRecordService.addBorrowRecord(member_id, book_id, borrowRecord);
@@ -39,6 +58,7 @@ public class BorrowRecordController {
         }
     }
 
+    @PreAuthorize("authentication.principal.libraryMemberId == #member_id or hasRole('ROLE_LIBRARIAN')")
     @PostMapping("/{member_id}/return/{book_id}")
     public ResponseEntity<BorrowRecord> setBorrowRecordReturnDate(@PathVariable Long member_id, @PathVariable Long book_id) {
         borrowRecordService.setBorrowRecordReturnDate(member_id, book_id);
@@ -58,22 +78,42 @@ public class BorrowRecordController {
     }
 
     @PostMapping("/{record_id}/add-to-member/{member_id}")
-    public void addBorrowRecordToLibraryMember(@PathVariable Long record_id, @PathVariable Long member_id) {
-        borrowRecordService.addBorrowRecordToLibraryMember(record_id, member_id);
+    public ResponseEntity<BorrowRecord> addBorrowRecordToLibraryMember(@PathVariable Long record_id, @PathVariable Long member_id) {
+        Optional<BorrowRecord> updated = borrowRecordService.addBorrowRecordToLibraryMember(record_id, member_id);
+        if (updated.isPresent()) {
+            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/{record_id}/remove-from-member/{member_id}")
-    public void removeBorrowRecordFromLibraryMember(@PathVariable Long record_id, @PathVariable Long member_id) {
-        borrowRecordService.removeBorrowRecordFromLibraryMember(record_id, member_id);
+    public ResponseEntity<BorrowRecord> removeBorrowRecordFromLibraryMember(@PathVariable Long record_id, @PathVariable Long member_id) {
+        Optional<BorrowRecord> updated = borrowRecordService.removeBorrowRecordFromLibraryMember(record_id, member_id);
+        if (updated.isPresent()) {
+            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/{record_id}/add-book/{book_id}")
-    public void addBookToBorrowRecord(@PathVariable Long record_id, @PathVariable Long book_id) {
-        borrowRecordService.addBookToBorrowRecord(record_id, book_id);
-    }
+//    @PostMapping("/{record_id}/add-book/{book_id}")
+//    public ResponseEntity<BorrowRecord> addBookToBorrowRecord(@PathVariable Long record_id, @PathVariable Long book_id) {
+//        Optional<BorrowRecord> updated = borrowRecordService.addBookToBorrowRecord(record_id, book_id);
+//        if (updated.isPresent()) {
+//            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
-    @PostMapping("/{record_id}/remove-book/{book_id}")
-    public void removeBookFromBorrowRecord(@PathVariable Long record_id, @PathVariable Long book_id) {
-        borrowRecordService.removeBookFromBorrowRecord(record_id, book_id);
-    }
+//    @PostMapping("/{record_id}/remove-book/")
+//    public ResponseEntity<BorrowRecord> removeBookFromBorrowRecord(@PathVariable Long record_id) {
+//        Optional<BorrowRecord> updated = borrowRecordService.removeBookFromBorrowRecord(record_id);
+//        if (updated.isPresent()) {
+//            return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

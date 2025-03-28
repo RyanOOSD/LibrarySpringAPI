@@ -1,5 +1,6 @@
 package org.example.libraryspringapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -7,8 +8,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.example.libraryspringapi.entity.auth.LibraryUser;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,13 +44,17 @@ public class LibraryMember {
     // Since membershipCard is FK in this table, it is the "owner" of the relationship
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "membership_card_id", referencedColumnName = "id")
-    @JsonManagedReference(value = "mem-card")
+    @JsonManagedReference(value = "member-card")
     private MembershipCard membershipCard;
 
     // Referenced table
     @OneToMany(mappedBy = "libraryMember", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonManagedReference(value = "mem-borrow")
-    private List<BorrowRecord> borrowedBooks;
+    @JsonManagedReference(value = "member-books")
+    private List<BorrowRecord> borrowedBooks = new ArrayList<>();
+
+    @OneToOne(mappedBy = "libraryMember", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference(value = "user-member")
+    private LibraryUser libraryUser;
 
     public LibraryMember() {
     }
@@ -104,6 +111,14 @@ public class LibraryMember {
 
     public void setBorrowedBooks(List<BorrowRecord> borrowedBooks) {
         this.borrowedBooks = borrowedBooks;
+    }
+
+    public LibraryUser getLibraryUser() {
+        return libraryUser;
+    }
+
+    public void setLibraryUser(LibraryUser libraryUser) {
+        this.libraryUser = libraryUser;
     }
 
     @Override

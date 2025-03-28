@@ -4,8 +4,10 @@ import org.example.libraryspringapi.entity.Author;
 import org.example.libraryspringapi.entity.Book;
 import org.example.libraryspringapi.repository.AuthorRepo;
 import org.example.libraryspringapi.repository.BookRepo;
+import org.example.libraryspringapi.repository.BorrowRecordRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,16 +15,30 @@ public class BookService {
 
     private BookRepo bookRepo;
     private AuthorRepo authorRepo;
+    private BorrowRecordRepo borrowRecordRepo;
 
     // Access repos with constructor DI
-    public BookService(BookRepo bookRepo, AuthorRepo authorRepo) {
+    public BookService(BookRepo bookRepo, AuthorRepo authorRepo, BorrowRecordRepo borrowRecordRepo) {
         this.bookRepo = bookRepo;
         this.authorRepo = authorRepo;
+        this.borrowRecordRepo = borrowRecordRepo;
     }
 
     // Get all books
     public List<Book> getAllBooks() {
         return bookRepo.findAll();
+    }
+
+    public List<Book> getAllAvailableBooks() {
+        List<Book> allBooks = bookRepo.findAll();
+        List<Book> availableBooks = new ArrayList<>();
+
+        for (Book book : allBooks) {
+            if (!borrowRecordRepo.existsByBookAndReturnDateIsNull(book)) {
+                availableBooks.add(book);
+            }
+        }
+        return availableBooks;
     }
 
     // Get book by ID
