@@ -14,10 +14,11 @@ import java.util.Optional;
 @Service
 public class BorrowRecordService {
 
-    private BorrowRecordRepo borrowRecordRepo;
-    private LibraryMemberRepo libraryMemberRepo;
-    private BookRepo bookRepo;
+    private final BorrowRecordRepo borrowRecordRepo;
+    private final LibraryMemberRepo libraryMemberRepo;
+    private final BookRepo bookRepo;
 
+    // Access repos through constructor DI
     public BorrowRecordService(BorrowRecordRepo borrowRecordRepo, LibraryMemberRepo libraryMemberRepo, BookRepo bookRepo) {
         this.borrowRecordRepo = borrowRecordRepo;
         this.libraryMemberRepo = libraryMemberRepo;
@@ -29,12 +30,14 @@ public class BorrowRecordService {
         return borrowRecordRepo.findAll();
     }
 
+    // Get a list of all borrow records for a library member
     public Optional<List<BorrowRecord>> getBorrowRecordsByLibraryMember(Long libraryMemberId) {
         LibraryMember libraryMember = libraryMemberRepo.findById(libraryMemberId).orElse(null);
         if (libraryMember != null) {
             List<BorrowRecord> borrowRecords = borrowRecordRepo.findBorrowRecordByLibraryMember(libraryMember);
             return Optional.of(borrowRecords);
         }
+        // Return empty if the library member is not found
         return Optional.empty();
     }
 
@@ -50,12 +53,15 @@ public class BorrowRecordService {
         Book book = bookRepo.findById(bookId).orElse(null);
         // Check if the book has already been checked out
         if (borrowRecordRepo.existsByBookAndReturnDateIsNull(book)) {
+            // If the book has already been checked out, return empty
             return Optional.empty();
         }
         if (libraryMember != null && book != null) {
+            // If the book is available, create a borrow record with the specified library member and book
             newBorrowRecord.setLibraryMember(libraryMember);
             newBorrowRecord.setBook(book);
         }
+        // Save and return the new borrow record
         BorrowRecord saved = borrowRecordRepo.save(newBorrowRecord);
         return Optional.of(saved);
     }
@@ -65,8 +71,10 @@ public class BorrowRecordService {
         LibraryMember libraryMember = libraryMemberRepo.findById(memberId).orElse(null);
         Book book = bookRepo.findById(bookId).orElse(null);
         if (libraryMember != null && book != null) {
+            // Find the most recent record of the specified member borrowing the book
             BorrowRecord borrowRecord = borrowRecordRepo.findTopByBookAndLibraryMemberOrderByBorrowDateDesc(book, libraryMember);
             if (borrowRecord.getReturnDate() == null) {
+                // If the book has not yet been returned, get today's date and set it
                 Date returnDate = new Date();
                 borrowRecord.setReturnDate(returnDate);
             }
@@ -96,8 +104,10 @@ public class BorrowRecordService {
         if (libraryMember != null && borrowRecord != null) {
             libraryMember.getBorrowedBooks().add(borrowRecord);
             libraryMemberRepo.save(libraryMember);
+            // If the borrow record is updated, return it
             return Optional.of(borrowRecord);
         }
+        // Return empty if the borrow record or library member was not found
         return Optional.empty();
     }
 

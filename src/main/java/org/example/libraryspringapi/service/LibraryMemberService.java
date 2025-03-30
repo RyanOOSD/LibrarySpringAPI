@@ -13,8 +13,9 @@ import java.util.List;
 public class LibraryMemberService {
 
     private final MembershipCardRepo membershipCardRepo;
-    private LibraryMemberRepo libraryMemberRepo;
+    private final LibraryMemberRepo libraryMemberRepo;
 
+    // Access repos through constructor DI
     public LibraryMemberService(LibraryMemberRepo libraryMemberRepo, MembershipCardRepo membershipCardRepo) {
         this.libraryMemberRepo = libraryMemberRepo;
         this.membershipCardRepo = membershipCardRepo;
@@ -42,6 +43,7 @@ public class LibraryMemberService {
             libraryMemberToUpdate.setName(updatedLibraryMember.getName());
             libraryMemberToUpdate.setEmail(updatedLibraryMember.getEmail());
             libraryMemberToUpdate.setMembershipDate(updatedLibraryMember.getMembershipDate());
+            // If the incoming data includes membership card information, update it
             if (updatedLibraryMember.getMembershipCard() != null) {
                 MembershipCard membershipCard = updatedLibraryMember.getMembershipCard();
                 membershipCard.setId(libraryMemberToUpdate.getMembershipCard().getId());
@@ -55,9 +57,12 @@ public class LibraryMemberService {
     // Delete a library member and their membership card as long as all books are returned
     public String deleteLibraryMember(Long id) {
         LibraryMember libraryMemberToDelete = libraryMemberRepo.findById(id).orElse(null);
+        // Check if a library member has ever borrowed any books
         if (libraryMemberToDelete != null && !libraryMemberToDelete.getBorrowedBooks().isEmpty()) {
+            // Iterate through their borrowed books and check that they have all been returned
             for (BorrowRecord books : libraryMemberToDelete.getBorrowedBooks()) {
                 if (books.getReturnDate() == null) {
+                    // Return custom error message
                     return "Library member cannot be deleted, they still have books checked out!";
                 }
             }
@@ -83,6 +88,7 @@ public class LibraryMemberService {
 
     // Add a new membership card to a member
     public void addNewMembershipCardToMember(Long member_id, MembershipCard membershipCard) {
+        // Save the membership card before retrieving the library member and adding the card to it
         membershipCardRepo.save(membershipCard);
         LibraryMember member = libraryMemberRepo.findById(member_id).orElse(null);
         if (member != null) {

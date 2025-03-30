@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+// Custom user details object created for Spring Security in order to include library member ID
 public class CustomUserDetails implements UserDetails {
 
     private String username;
@@ -12,6 +13,7 @@ public class CustomUserDetails implements UserDetails {
     private Long libraryMemberId;
     private Collection<? extends GrantedAuthority> authorities;
 
+    // Constructor
     public CustomUserDetails(String username, String password, Long libraryMemberId, Collection<? extends GrantedAuthority> authorities  ) {
         this.username = username;
         this.password = password;
@@ -19,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
+    // Required override methods if class implements UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -34,6 +37,7 @@ public class CustomUserDetails implements UserDetails {
         return username;
     }
 
+    // Define getter for library member ID
     public Long getLibraryMemberId() {
         return libraryMemberId;
     }

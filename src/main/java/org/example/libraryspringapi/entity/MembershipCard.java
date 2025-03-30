@@ -32,7 +32,7 @@ public class MembershipCard {
 
     // Relationship owned by LibraryMember
     // Since we don't want membershipCard to persist when a LibraryMember is deleted
-    // we don't specify any cascade types here
+    // don't specify any cascade types here
     @OneToOne(mappedBy = "membershipCard")
     @JsonBackReference(value = "member-card")
     private LibraryMember libraryMember;

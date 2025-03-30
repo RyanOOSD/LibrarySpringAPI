@@ -44,6 +44,7 @@ public class AuthorService {
             authorToUpdate.setName(newAuthorDetails.getName());
             authorToUpdate.setBiography(newAuthorDetails.getBiography());
         }
+        // Return author after saving changes
         return authorRepo.save(authorToUpdate);
     }
 
@@ -51,8 +52,10 @@ public class AuthorService {
     public String deleteAuthor(long id) {
         Author authorToDelete = authorRepo.findById(id).orElse(null);
         if (authorToDelete == null) {
+            // Custom message if author is not found
             return "Author does not exist!";
         } else if (!authorToDelete.getBooks().isEmpty()) {
+            // Custom message if author is still associated with a book
             return "Author cannot be deleted because it is associated with a book!";
         }
         authorRepo.deleteById(id);
@@ -69,14 +72,15 @@ public class AuthorService {
             book.getAuthors().add(author);
             authorRepo.save(author);
             bookRepo.save(book);
+            // Return author after saving
             return Optional.of(author);
         }
+        // Return empty if book or author are not found
         return Optional.empty();
     }
 
     // Remove author from a book
     public Optional<Author> removeAuthorFromBook(Long authorId, Long bookId) {
-        // Get existing author and book
         Author author = authorRepo.findById(authorId).orElse(null);
         Book book = bookRepo.findById(bookId).orElse(null);
         if (author != null && book != null) {

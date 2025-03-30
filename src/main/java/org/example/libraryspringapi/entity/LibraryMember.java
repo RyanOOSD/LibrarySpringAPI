@@ -50,6 +50,7 @@ public class LibraryMember {
     @JsonManagedReference(value = "member-books")
     private List<BorrowRecord> borrowedBooks = new ArrayList<>();
 
+    // Associate a library user account with a library member
     @OneToOne(mappedBy = "libraryMember", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonBackReference(value = "user-member")
     private LibraryUser libraryUser;

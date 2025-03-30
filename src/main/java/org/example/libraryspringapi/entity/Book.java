@@ -34,9 +34,11 @@ public class Book {
     @Column(nullable = false)
     private Integer publicationYear;
 
+    // Initialize authors attribute to an empty HashSet
     @ManyToMany(mappedBy = "books", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     private Set<Author> authors = new HashSet<>();
 
+    // Initialize borrowRecords attribute to an empty ArrayList
     @OneToMany(mappedBy = "book", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JsonManagedReference(value = "book-records")
     private List<BorrowRecord> borrowRecords = new ArrayList<>();

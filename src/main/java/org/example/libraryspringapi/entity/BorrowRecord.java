@@ -27,11 +27,13 @@ public class BorrowRecord {
     @Column(nullable = true)
     private Date returnDate;
 
+    // Adds library_member_id as a FK-constrained column from library member
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "library_member_id", referencedColumnName = "id")
     @JsonBackReference(value = "member-books")
     private LibraryMember libraryMember;
 
+    // Adds book_id as a FK-constrained column from book
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     @JsonBackReference(value = "book-records")

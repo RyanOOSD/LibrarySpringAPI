@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+// Repository for borrow records
 @Repository
 public interface BorrowRecordRepo extends JpaRepository<BorrowRecord, Long> {
     // Check if a book is already checked out
@@ -16,5 +17,6 @@ public interface BorrowRecordRepo extends JpaRepository<BorrowRecord, Long> {
     // Get the most recent BorrowRecord based on the library member and the book
     BorrowRecord findTopByBookAndLibraryMemberOrderByBorrowDateDesc(Book book, LibraryMember libraryMember);
 
+    // Get a list of borrow records for the specified library member
     List<BorrowRecord> findBorrowRecordByLibraryMember(LibraryMember libraryMember);
 }

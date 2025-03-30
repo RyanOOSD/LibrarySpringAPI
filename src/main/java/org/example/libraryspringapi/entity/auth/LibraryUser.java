@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.example.libraryspringapi.entity.LibraryMember;
 
+// Custom user object used by Spring Security for basic authentication
 @Entity
 public class LibraryUser {
     @Id
@@ -11,6 +12,7 @@ public class LibraryUser {
     @Column(nullable = false)
     private Long id;
 
+    // Enforce unique username
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -20,6 +22,7 @@ public class LibraryUser {
     @Column(nullable = false)
     private String role;
 
+    // Adds library_member_id as a FK-constrained column from library memberr
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "library_member_id", referencedColumnName = "id")
     @JsonManagedReference(value = "user-member")

@@ -26,6 +26,7 @@ public class Author {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String biography;
 
+    // Specify bridging table to let multiple authors be associated with multiple books
     @ManyToMany
     @JoinTable(name = "author_books",
             joinColumns = @JoinColumn(name = "author_id"),

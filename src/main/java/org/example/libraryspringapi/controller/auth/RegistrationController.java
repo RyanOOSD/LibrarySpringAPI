@@ -12,12 +12,14 @@ import java.util.Optional;
 @RestController
 public class RegistrationController {
 
-    private LibraryUserService libraryUserService;
+    private final LibraryUserService libraryUserService;
 
+    // Access service methods through constructor
     public RegistrationController(LibraryUserService libraryUserService) {
         this.libraryUserService = libraryUserService;
     }
 
+    // Endpoint to register a new librarian with "LIBRARIAN" role by library member ID
     @PostMapping("/register-librarian/{member_id}")
     public ResponseEntity<LibraryUser> registerLibrarian(@PathVariable Long member_id, @RequestBody LibraryUser libraryUser) {
         libraryUser.setRole("LIBRARIAN");
@@ -30,6 +32,7 @@ public class RegistrationController {
         }
     }
 
+    // Endpoint to register a new library user with "MEMBER" role by library member ID
     @PostMapping("/register-member/{member_id}")
     public ResponseEntity<LibraryUser> registerMember(@PathVariable Long member_id, @RequestBody LibraryUser libraryUser) {
         libraryUser.setRole("MEMBER");
@@ -42,12 +45,14 @@ public class RegistrationController {
         }
     }
 
+    // Endpoint to update a user by ID
     @PutMapping("/user/{id}")
     public ResponseEntity<LibraryUser> updateUser(@PathVariable Long id, @RequestBody LibraryUser libraryUser) {
         LibraryUser updated = libraryUserService.updateLibraryUser(id, libraryUser);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
+    // Endpoint to delete a user by ID
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         libraryUserService.deleteLibraryUser(id);
